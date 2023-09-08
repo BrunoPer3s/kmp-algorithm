@@ -14,3 +14,18 @@ void lps(int aux[M], char P[M]) {
     aux[i] = j;
   }
 }
+
+int main() {
+  char P[m] = "aabac";
+  int aux[m];
+
+  lps(aux, P);
+  for(int i = 0; i < m; i++) {
+    printf("%d ", aux[i]);
+  }
+  
+
+  
+  return 0;
+  
+}
