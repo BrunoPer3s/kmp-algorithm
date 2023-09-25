@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
 
 #define M 6
 #define N 620
@@ -19,12 +18,12 @@ void preProcessadorPadrao(char P[M], int aux[M]) {
   }
 }
 
-int kmp(char P[M], char T[N], int* comparacoes) {
+int kmp(char P[M], char T[N]) {
   int aux[M];
   preProcessadorPadrao(P, aux);
-  
+  int count = 0;
+
   //Printing the lps array
-   printf("\n");
    for(int i = 0; i < M; i++) {
     printf("%d ", aux[i]);
   }
@@ -32,33 +31,38 @@ int kmp(char P[M], char T[N], int* comparacoes) {
   int k = 0;
 
   for(int i = 0; i < N; i++) {
+    printf("\ni =%d\n", i);
     while(k > 0 && (P[k] != T[i])) {
+      printf("\nT[%d] -> %c != P[%d] -> %c\n", i, T[i], k, P[k]);
+      count++;
       k = aux[k-1];
-      (*comparacoes)++;
     }      
     
     if(T[i] == P[k]) {
+      printf("\nT[%d] -> %c == P[%d] -> %c\n", i, T[i], k, P[k]);
       k++;
-      (*comparacoes)++;
+      count++;
+    }
+
+    if(k == 0 && T[i] != P[k]) {
+      printf("\nT[%d] -> %c != P[%d] -> %c\n", i, T[i], k, P[k]);
+      count++;
     }
       
     if(k == M) {
       i++;
+      printf("\nComp = %d\n", count);
       return (i - k);
     }
-    
   }
   return -1;
 }
 
 int main() {
-  clock_t start, end;
-  start = clock();
-
   FILE* arq = fopen("data.txt", "r");
 
   if(arq == NULL) {
-    printf("Erro Arquivo\n");
+    printf("Erro na leitura do arquivo!\n");
     return 0;
   }
 
@@ -71,22 +75,14 @@ int main() {
     i++;
   }
 
-  for (int i = 0; i < N; i++) {
-    printf("%c", texto[i]);
-  }
+  int index = kmp(padrao, texto);
 
-  int comparacoes = 0;
-  int index = kmp(padrao, texto, &comparacoes);
-
-  printf("\nAchado em T[%d] / com N %d Comparacoes\n", index, comparacoes);
+  printf("\n%d ", index);
 
   for(int i = 0; i < M; i++) {
     printf("%c", texto[index]);
     index++;
   }
-
-  end = clock();
-  printf("\n\nTempo: %8f seg.\n", ((double)(end - start)) / CLOCKS_PER_SEC);
 
   return 0;
 }
